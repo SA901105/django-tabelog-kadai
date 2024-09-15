@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1>有料プラン解約</h1>
+    <p>有料プランを解約すると以下の特典を受けられなくなります。本当に解約してもよろしいですか？</p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>有料プランの内容</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>当日の2時間前までならいつでも予約可能</td>
+            </tr>
+            <tr>
+                <td>店舗をお好きなだけお気に入りに追加可能</td>
+            </tr>
+            <tr>
+                <td>レビューを全件閲覧可能</td>
+            </tr>
+            <tr>
+                <td>レビューを投稿可能</td>
+            </tr>
+            <tr>
+                <td>月額たったの300円</td>
+            </tr>
+        </tbody>
+    </table>
+    <form method="post" action="{% url 'userapp:cancel_subscription' %}">
+        {% csrf_token %}
+
+        
+        <button type="submit" class="btn btn-danger">解約</button>
+    </form>
+</div>
+{% endblock %}

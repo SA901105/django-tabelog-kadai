@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}  <!-- 追加 -->
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+{% endblock css %}
+
+{% block content %}
+
+<div class="container">
+    <div class="loginPage_contents">
+        <h1 class="h3 loginPage_contents_title">新規ユーザー登録</h1>
+        <br><hr><br>
+        <form action="" method="POST">
+            <div class="col-md-6 offset-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        {{ form.non_field_errors }}
+                        {% for field in form %}
+                            <div class="form-group">
+                                <label>{{ field.label}}</label>
+                                {{ field|add_class:"form-control" }}  <!-- クラスを追加 -->
+                                {{ field.errors }}
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn common-btn">登録してログイン</button>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                        {% csrf_token %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

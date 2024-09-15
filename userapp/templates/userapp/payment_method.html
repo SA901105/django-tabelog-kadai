@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クレジットカード登録</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/subscribe.css' %}">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>クレジットカード登録</h1>
+        <form id="payment-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="cardholder-first-name">カード名義人</label>
+                <input type="text" id="cardholder-first-name" class="form-control" placeholder="名" required>
+                <input type="text" id="cardholder-last-name" class="form-control mt-2" placeholder="姓" required>
+            </div>
+            <div class="form-group">
+                <label for="card-element">カード情報</label>
+                <div id="card-element">
+                    <!-- Stripe Elements がここに挿入されます。 -->
+                    <input type="text" id="card-number" class="form-control" placeholder="カード番号" required>
+                    <div class="row mt-2">
+                        <div class="col">
+                            <input type="text" id="card-expiry-mm" class="form-control" placeholder="MM" required>
+                        </div>
+                        <div class="col">
+                            <input type="text" id="card-expiry-yy" class="form-control" placeholder="YY" required>
+                        </div>
+                    </div>
+                    <input type="text" id="card-cvc" class="form-control mt-2" placeholder="CVC" required>
+                </div>
+                <div id="card-errors" role="alert"></div>
+            </div>
+            <button type="submit" class="btn btn-success">登録する</button>
+        </form>
+    </div>
+    <script>
+        // Stripeの公開可能キーを設定
+        const stripe = Stripe('{{ stripe_publishable_key|escapejs }}');
+
+        // Elementsを作成
+        const elements = stripe.elements();
+        const style = {
+            base: {
+                color: "#32325d",
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: "antialiased",
+                fontSize: "16px",
+                "::placeholder": {
+                    color: "#aab7c4"
+                }
+            },
+            invalid: {
+                color: "#fa755a",
+                iconColor: "#fa755a"
+            }
+        };
+
+        // 郵便番号を非表示にしてカード情報の入力欄を作成
+        const card = elements.create("card", { style: style, hidePostalCode: true });
+        card.mount("#card-element");
+
+        // エラーメッセージの表示
+        card.on('change', ({error}) => {
+            const displayError = document.getElementById('card-errors');
+            if (error) {
+                displayError.textContent = error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // フォーム送信時の処理
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const cardholderFirstName = document.getElementById('cardholder-first-name').value;
+            const cardholderLastName = document.getElementById('cardholder-last-name').value;
+            const cardholderName = cardholderFirstName + ' ' + cardholderLastName;
+
+            const { token, error } = await stripe.createToken(card, {
+                name: cardholderName
+            });
+
+            if (error) {
+                const displayError = document.getElementById('card-errors');
+                displayError.textContent = error.message;
+            } else {
+                        // サーバーにトークンを送信
+                        const csrfmiddlewaretoken = document.querySelector("[name='csrfmiddlewaretoken']").value;
+                        const data = {
+                            token: token.id,
+                            csrfmiddlewaretoken: csrfmiddlewaretoken,
+                            name: cardholderName
+                        };
+                        const response = await fetch("{% url 'userapp:subscribe' %}", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': '{{ csrf_token }}',
+                            },
+                            body: JSON.stringify(data),
+                        });
+                        
+                        if (response.ok) {
+                            // 成功時の処理
+                            window.location.href = "{% url 'userapp:subscription' %}";
+                        } else {
+                            const displayError = document.getElementById('card-errors');
+                            displayError.textContent = '支払い情報の送信に失敗しました。';
+                        }        
+            }
+        });
+    </script>
+</body>
+</html>

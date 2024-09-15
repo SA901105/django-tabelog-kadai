@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load custom_filters %}  <!-- 追加 -->
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2 class="text-center">ログイン</h2>
+            <p class="text-center text-danger">
+                動作確認用アカウント<br>
+                メールアドレス: taro.samurai@example.com<br>
+                パスワード: nagoyameshi<br>
+                テストカード: 4242424242424242<br>
+                ※テストカード詳細はこちら
+            </p>
+            <form method="post" action="{% url 'userapp:login' %}">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="form-group">
+                    <label for="id_email">メールアドレス</label>
+                    {{ form.username|add_class:"form-control" }}
+                </div>
+                <div class="form-group">
+                    <label for="id_password">パスワード</label>
+                    {{ form.password|add_class:"form-control" }}
+                </div>
+                <div class="form-group form-check">
+                    {{ form.remember_me|add_class:"form-check-input" }}
+                    <!-- <label class="form-check-label" for="id_remember_me">次回から自動的にログインする</label> -->
+                </div>
+                <button type="submit" class="btn btn-orange btn-block">ログイン</button>
+                <input type="hidden" name="next" value="{{ next }}">
+            </form>
+            <p class="text-center mt-3">
+                まだアカウントがない方は<a href="{% url 'userapp:signup' %}">こちら</a>。
+            </p>
+            <p class="text-center mt-3">
+                <a href="{% url 'userapp:password_reset' %}">パスワードをお忘れですか？</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

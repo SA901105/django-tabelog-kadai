@@ -1,0 +1,148 @@
+<!-- shop_info.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/review.css' %}">
+{% endblock css %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="section-title">{{ shop.name }}</h2>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="col-md-4">
+            <!-- 店舗情報の表示 -->
+        </div>
+    </div>
+    <br>
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="section-title">店舗基本情報</h2>
+            <table class="table">
+                <!-- 店舗の詳細情報 -->
+            </table>
+        </div>
+    </div>
+
+    <!-- メッセージの表示 -->
+    <div class="row">
+        <div class="col-md-12">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- 口コミ情報 -->
+    <br>
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="section-title">口コミ情報</h2>
+            {% if review_list %}
+                <h3>レビューコメント</h3>
+                {% for item in review_list %}
+                    <div class="balloon5">
+                        <div class="faceicon">
+                            <img src="{% static 'image/reviewer.png' %}">
+                            <p class="small">{{ item.user }}</p>
+                        </div>
+                        <div class="chatting">
+                            <div class="says">
+                                <div class="star-rating">
+                                    <div class="star-rating-front" style="width: {{ item.get_percent }}%">★★★★★</div>
+                                    <div class="star-rating-back">★★★★★</div>
+                                </div>
+                                <br>
+                                <p>{{ item.comment }}</p>
+                                <p class="small">{{ item.created_at }}</p>            
+                                {% if item.user == user %}
+                                    <form method="post" action="{% url 'userapp:review_delete' item.pk %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">削除</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+            <br>
+                <p>まだレビューはありません。</p>
+                <br>
+            {% endif %}
+            <hr>
+            <h3>レビューを投稿する</h3>
+            {% if user.is_authenticated %}
+                <form class="login-form" action="" method="POST">
+                    {{ review_form.non_field_errors }}
+                    <div class="evaluation" style="float:left;">
+                        <input id="score1" type="radio" name="score" value="5" />
+                        <label for="score1"><span class="text">最高</span>★</label>
+                        <input id="score2" type="radio" name="score" value="4" />
+                        <label for="score2"><span class="text">良い</span>★</label>
+                        <input id="score3" type="radio" name="score" value="3" />
+                        <label for="score3"><span class="text">普通</span>★</label>
+                        <input id="score4" type="radio" name="score" value="2" />
+                        <label for="score4"><span class="text">悪い</span>★</label>
+                        <input id="score5" type="radio" name="score" value="1" />
+                        <label for="score5"><span class="text">最悪</span>★</label>
+                    </div>
+                    <br><br><br>
+                    <label for="comment">コメント:</label>
+                    <div class="form-group" type="text">{{ review_form.comment }}</div>
+                    
+                    {% csrf_token %}
+                    <br>
+                    <button type="submit" class="btn common-btn" name="review_submit">投稿する</button>
+                    {% if form.errors %}
+                    <br>
+                    <p>エラー内容</p>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                    {% endif %} 
+                </form>
+            {% else %}
+                <p>レビューコメントを残すにはログインが必要です。</p>
+                <br>
+                <a class="btn common-btn" href="{% url 'userapp:signup' %}">新規登録</a>
+                <a class="btn common-btn-outline" href="{% url 'userapp:login' %}">ログイン</a>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- お気に入りボタン -->
+    {% if user.is_authenticated %}
+    {% if is_favorite %}
+        <form method="post" action="{% url 'userapp:shop_info' shop_id=shop.id %}">
+            {% csrf_token %}
+            <button type="submit" name="unfavorite_submit" class="btn btn-danger">お気に入りから削除</button>
+        </form>
+    {% else %}
+        <form method="post" action="{% url 'userapp:shop_info' shop_id=shop.id %}">
+            {% csrf_token %}
+            <button type="submit" name="favorite_submit" class="btn btn-primary">お気に入りに追加</button>
+        </form>
+    {% endif %}
+    {% endif %}
+
+    <!-- 予約フォーム -->
+    <form method="post" action="{% url 'userapp:shop_info' shop_id=shop.id %}">
+        {% csrf_token %}
+        {{ reservation_form.as_p }}
+        <button type="submit" name="reservation_submit" class="btn btn-success">予約する</button>
+    </form>
+</div>
+{% endblock %}

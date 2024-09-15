@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/index.css' %}">
+{% endblock css %}
+
+{% block content %}
+<section class="search-results">
+    <div class="container">
+        <h2 class="section-title">検索結果</h2>
+        <div class="row">
+            {% if total_hit_count > 0 %}
+                <h3>{{ total_hit_count }}件あります。<small>最大10件表示</small></h3>
+                <br><br>
+                {% for item in shop_info %}
+                <div class="col-md-12">
+                    <div class="section-outer-box">
+                        <div class="row">
+                            <div class="col-xs-9 col-md-9 section-box">
+                                <h4>{{ item.name }}
+                                    {% if item.id %}
+                                    <a href="{% url 'userapp:shop_info' item.id %}" class="btn common-btn">詳細を見る</a>
+                                    {% endif %}
+                                </h4>
+                                <p>{{ item.tel }}</p>
+                                <p>{{ item.address }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>検索結果が見つかりませんでした。</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}
