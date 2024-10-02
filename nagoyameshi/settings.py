@@ -120,4 +120,15 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'userhanako@gmail.com'  # アプリ管理者のメールアドレス
+EMAIL_HOST_PASSWORD = 'hanakohanako'  # アプリ管理者のGmailのパスワード
+DEFAULT_FROM_EMAIL = 'userhanako@gmail.com'  # メールの送信元アドレス
+
+EMAIL_HOST_USER = os.getenv('userhanako@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('hanakohanako')
+
+
 
