@@ -14,6 +14,8 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display_links = ('category_l',)
     # 一覧画面で編集可能にするフィールド
     list_editable = ('name',)
+    # 検索可能なフィールドを追加
+    search_fields = ('category_l', 'name')
 
 # レビューモデルの管理画面設定
 @admin.register(Review)
