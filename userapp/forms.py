@@ -14,6 +14,23 @@ SCORE_CHOICES = [
     (5, '★★★★★'),
 ]
 
+# 価格帯の選択肢（例として1000円ごとに範囲を指定）
+PRICE_CHOICES = [
+    ('0-1000', '0円〜1000円'),
+    ('1000-3000', '1000円〜3000円'),
+    ('3000-5000', '3000円〜5000円'),
+    ('5000-10000', '5000円〜10000円'),
+    ('10000-', '10000円以上'),
+]
+
+# 地域の選択肢（例としていくつかの地域を定義）
+REGION_CHOICES = [
+    ('北区', '北区'),
+    ('南区', '南区'),
+    ('東区', '東区'),
+    ('西区', '西区'),
+]
+
 class SearchForm(forms.Form):
     selected_category = forms.ModelChoiceField(
         label='業態',
@@ -21,10 +38,32 @@ class SearchForm(forms.Form):
         queryset=Category.objects.all(),
     )
     freeword = forms.CharField(min_length=2, max_length=100, label='', required=False)
+    
+    region = forms.ChoiceField(
+        label='地域',
+        choices=REGION_CHOICES,
+        required=False
+    )
+
+    price_range = forms.ChoiceField(
+        label='価格帯',
+        choices=PRICE_CHOICES,
+        required=False
+    )
+
+    rating = forms.ChoiceField(
+        label='評価',
+        choices=SCORE_CHOICES,
+        required=False
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        selected_category = self.fields['selected_category']
+        self.fields['selected_category'].widget.attrs.update({'class': 'form-control'})
+        self.fields['freeword'].widget.attrs.update({'class': 'form-control', 'placeholder': 'フリーワード'})
+        self.fields['region'].widget.attrs.update({'class': 'form-control'})
+        self.fields['price_range'].widget.attrs.update({'class': 'form-control'})
+        self.fields['rating'].widget.attrs.update({'class': 'form-control'})
 
 class SignUpForm(UserCreationForm):
     class Meta:
