@@ -23,16 +23,25 @@ SCORE_CHOICES = [
 class Shop(models.Model):
     name = models.CharField("店舗名", max_length=255)
     pr_long = models.TextField("店舗紹介", blank=True, null=True)
-    price_range = models.CharField("予算", max_length=100, blank=True, null=True)
+    price_range = models.IntegerField("予算", blank=True, null=True)  # 価格帯を数値に変更
     address = models.CharField("住所", max_length=255, blank=True, null=True)
     tel = models.CharField("TEL", max_length=255, blank=True, null=True)
     opening_hours = models.CharField("営業時間", max_length=255, blank=True, null=True)
     regular_holiday = models.CharField("定休日", max_length=255, blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="カテゴリ")
-    description = models.TextField() # description フィールドを追加
+    description = models.TextField(blank=True, null=True)
+    region = models.CharField("地域", max_length=100, blank=True, null=True)  # 地域フィールドを追加
+    rating = models.DecimalField("評価", max_digits=3, decimal_places=2, default=0)  # 評価フィールドを追加
 
     def __str__(self):
         return self.name
+
+    def update_rating(self):
+        """レビューに基づいて店舗の平均評価を更新する"""
+        reviews = self.review_set.all()
+        if reviews.exists():
+            self.rating = reviews.aggregate(models.Avg('score'))['score__avg']
+            self.save()
 
 # レビュー
 class Review(models.Model):
@@ -71,7 +80,7 @@ class Reservation(models.Model):
     num_people = models.PositiveIntegerField("人数")
 
     def __str__(self):
-        return f'{self.shop.name} - {self.user.username} - {self.datetime}'
+        return f'{self.shop.name} - {self.user.username} - {self.date_time}'
 
 class Favorite(models.Model):
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
@@ -113,4 +122,3 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     """Update user profile when user is saved"""
     instance.profile.save()
-
