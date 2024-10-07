@@ -140,6 +140,7 @@ class IndexView(TemplateView):
 def Search(request):
     total_hit_count = 0
     shop_info = []
+    sort_by = request.GET.get('sort', 'rating')  # 並び替え基準を取得（デフォルトは評価）
 
     if request.method == 'GET':
         searchform = SearchForm(request.GET)
@@ -156,6 +157,14 @@ def Search(request):
             if freeword:
                 query = query.filter(name__icontains=freeword)
 
+            # 並び替え処理
+            if sort_by == 'region':
+                query = query.order_by('region')
+            elif sort_by == 'price':
+                query = query.order_by('price_range')
+            elif sort_by == 'rating':
+                query = query.order_by('-rating')
+
             total_hit_count = query.count()
             shop_info = query[:10]
 
@@ -167,6 +176,7 @@ def Search(request):
 
     return render(request, 'userapp/search.html', params)
 
+# その他のビューは変更なし
 # 予約キャンセルのビュー
 class ReservationCancelView(LoginRequiredMixin, DeleteView):
     model = Reservation
