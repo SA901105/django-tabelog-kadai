@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}サイト名{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- ナビゲーションバーの内容 -->
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        <!-- 各ページのコンテンツ -->
+        {% endblock %}
+    </main>
+
+    <footer>
+        <p>© 2024 サイト名</p>
+    </footer>
+</body>
+</html>
+{% endblock %}
