@@ -17,7 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'userapp',
-    'accounts', # カスタムユーザー
+    'accounts',  # カスタムユーザー
 ]
 
 MIDDLEWARE = [
@@ -32,7 +32,6 @@ MIDDLEWARE = [
 ]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
 
 ROOT_URLCONF = 'nagoyameshi.urls'
 
@@ -93,7 +92,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'userapp/static'),
 ]
 
-# STATIC_ROOT の設定
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGIN_URL = 'userapp:login'
@@ -107,28 +105,24 @@ STRIPE_SECRET_KEY = 'sk_test_51PegsNHgh7sLH8myPovEAkC4vKrXmAMecdKrBbaW7tS4tKWH0A
 STRIPE_PUBLISHABLE_KEY = 'pk_test_51PegsNHgh7sLH8myw7KsXeXiADJWvP4d7hfco1kOfb1hTxeEZw8f4PdgXNxhri368KMNGeu3AehTuWBP6reIdH0i00JjXSkETX'
 STRIPE_PRICE_ID = 'price_1PehRdHgh7sLH8myyNDfnci9'
 
-
 # Custom authentication backend
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # 既存の認証バックエンド
     'userapp.backends.EmailBackend',  # 新しいメールアドレス認証バックエンド
-    'accounts.backends.CustomUserBackend', # カスタム認証バックエンドを使用
+    'accounts.backends.CustomUserBackend',  # カスタム認証バックエンドを使用
 ]
-
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
-
-EMAIL_BACKEND   = 'django.core.mail.backends.smtp.EmailBackend'
+# メール設定
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'userhanako@gmail.com'  # アプリ管理者のメールアドレス
-EMAIL_HOST_PASSWORD = 'hanakohanako'  # アプリ管理者のGmailのパスワード
-DEFAULT_FROM_EMAIL = 'userhanako@gmail.com'  # メールの送信元アドレス
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'userhanako@gmail.com')  # Gmailアカウント
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'your_app_password_here')  # アプリパスワード
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # メール送信元アドレス
 
-EMAIL_HOST_USER = os.getenv('userhanako@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('hanakohanako')
-
-
-
+# ローカル開発時はメール送信をコンソールに出力する設定
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
