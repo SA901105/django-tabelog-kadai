@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth.views import (
-    LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView
+    LogoutView, PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView, PasswordResetCompleteView,
+    PasswordChangeView, PasswordChangeDoneView  # ここにPasswordChangeViewとPasswordChangeDoneViewを追加
 )
 from .views import (
     IndexView, SignUpView, Login, Search,
@@ -43,6 +44,10 @@ urlpatterns = [
 
     # プロフィール編集ページ
     path('mypage/profile/edit/', ProfileEditView.as_view(), name='profile_edit'),
+
+    # パスワード変更ページ
+    path('mypage/profile/password/', PasswordChangeView.as_view(template_name='userapp/password_change_form.html'), name='password_change'),
+    path('mypage/profile/password/done/', PasswordChangeDoneView.as_view(template_name='userapp/password_change_done.html'), name='password_change_done'),
 
     # ユーザーの予約一覧
     path('mypage/reservations/', ReservationsView.as_view(), name='reservations'),
