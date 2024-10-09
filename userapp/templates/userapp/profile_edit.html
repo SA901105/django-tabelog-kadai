@@ -5,6 +5,14 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        
+        <!-- パスワードリセットリンクの追加 -->
+        <div class="form-group">
+            <label for="password">パスワード:</label>
+            <p>パスワードは設定されていませんでした。</p>
+            <p>パスワードを忘れた方は <a href="{% url 'userapp:password_reset' %}">こちら</a> を押してください。</p>
+        </div>
+        
         <button type="submit" class="btn btn-primary">保存</button>
         <a href="{% url 'userapp:profile' %}" class="btn btn-secondary">キャンセル</a>
     </form>
