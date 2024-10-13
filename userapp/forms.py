@@ -14,7 +14,6 @@ SCORE_CHOICES = [
     (5, '★★★★★'),
 ]
 
-# 価格帯の選択肢（例として1000円ごとに範囲を指定）
 PRICE_CHOICES = [
     ('0-1000', '0円〜1000円'),
     ('1000-3000', '1000円〜3000円'),
@@ -23,7 +22,6 @@ PRICE_CHOICES = [
     ('10000-', '10000円以上'),
 ]
 
-# 地域の選択肢（例としていくつかの地域を定義）
 REGION_CHOICES = [
     ('北区', '北区'),
     ('南区', '南区'),
@@ -115,6 +113,8 @@ class ReviewEditForm(forms.ModelForm):
 
 # プロフィール編集フォーム
 class ProfileEditForm(UserChangeForm):
+    password = forms.CharField(widget=forms.HiddenInput(), required=False)
+
     class Meta:
         model = User
         fields = [
