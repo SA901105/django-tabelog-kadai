@@ -132,3 +132,21 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # メール送信元アドレス
 # ローカル開発時はメール送信をコンソールに出力する設定
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# SQLログ出力のためのLOGGING設定
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
+    },
+}

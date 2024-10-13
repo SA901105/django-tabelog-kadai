@@ -47,32 +47,36 @@ def Search(request):
 
             query = Shop.objects.all()
 
-            # Qオブジェクトを使ったフィルタの組み合わせ
-            filters = Q()
-
             # カテゴリのフィルタリング
             if category_id:
-                filters &= Q(category_id=category_id)
+                query = query.filter(category_id=category_id)
 
             # フリーワードのフィルタリング（店名で検索）
             if freeword:
-                filters &= Q(name__icontains=freeword)
+                query = query.filter(name__icontains=freeword)
 
             # 地域のフィルタリング（住所に地域が含まれるか）
             if region:
-                filters &= Q(region__icontains=region)
+                query = query.filter(region__icontains=region)
 
             # 価格帯のフィルタリング
             if price_range:
-                min_price, max_price = map(int, price_range.split('-'))
-                filters &= Q(price_range__gte=min_price, price_range__lte=max_price)
+                price_range_values = price_range.split('-')
+                min_price = int(price_range_values[0])
+                max_price = price_range_values[1]
+                if max_price:
+                    max_price = int(max_price)
+                    query = query.filter(price_range__gte=min_price, price_range__lte=max_price)
+                else:
+                    query = query.filter(price_range__gte=min_price)
 
-            # 評価のフィルタリング
+            # 評価のフィルタリング（平均スコアでフィルタリング）
             if rating:
-                filters &= Q(review__score__gte=rating)
-
-            # フィルタを適用
-            query = query.filter(filters).distinct()
+                try:
+                    rating_value = int(rating)
+                    query = query.annotate(avg_rating=Avg('review__score')).filter(avg_rating__gte=rating_value)
+                except ValueError:
+                    pass  # 無効なratingが渡された場合はフィルタを適用しない
 
             total_hit_count = query.count()
             shop_info = query[:10]  # 表示件数を制限
