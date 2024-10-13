@@ -131,4 +131,4 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # メール送信元アドレス
 
 # ローカル開発時はメール送信をコンソールに出力する設定
 if DEBUG:
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
