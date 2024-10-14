@@ -48,7 +48,7 @@ RATING_CHOICES = [
 class Shop(models.Model):
     name = models.CharField("店舗名", max_length=255)
     pr_long = models.TextField("店舗紹介", blank=True, null=True)
-    price_range = models.IntegerField("予算", choices=BUDGET_CHOICES, blank=True, null=True)  # 予算を選択式に変更
+    price_range = models.CharField("予算", max_length=10, choices=BUDGET_CHOICES, blank=True, null=True)  # 予算を選択式に変更
     address = models.CharField("住所", max_length=255, blank=True, null=True)  # フリーワード入力に変更
     tel = models.CharField("TEL", max_length=255, blank=True, null=True)
     opening_hours = models.CharField("営業時間", max_length=255, blank=True, null=True)
@@ -80,12 +80,12 @@ class Review(models.Model):
     class Meta:
         unique_together = ('shop', 'user')
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.shop.update_rating()  # レビューが保存されるたびに評価を更新
+
     def __str__(self):
         return f'{self.shop.name} - {self.user.username}'
-
-    def get_percent(self):
-        percent = round(self.score / 5 * 100)
-        return percent
 
 # サブスクリプション
 class Subscription(models.Model):
