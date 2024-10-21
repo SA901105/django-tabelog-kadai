@@ -22,26 +22,16 @@ SCORE_CHOICES = [
 # 地域の選択肢
 REGION_CHOICES = [
     ('北区', '北区'),
-    ('南区', '南区'),
-    ('東区', '東区'),
-    ('西区', '西区'),
+    ('昭和区', '昭和区'),
+    ('中区', '中区'),
 ]
 
 # 予算の選択肢
 BUDGET_CHOICES = [
-    (1000, '1000円'),
-    (2000, '2000円'),
-    (3000, '3000円'),
-    (5000, '5000円'),
-]
-
-# 評価の選択肢
-RATING_CHOICES = [
-    (1, '★'),
-    (2, '★★'),
-    (3, '★★★'),
-    (4, '★★★★'),
-    (5, '★★★★★'),
+    ('1000', '1000円'),
+    ('2000', '2000円'),
+    ('3000', '3000円'),
+    ('5000', '5000円'),
 ]
 
 # 店舗情報
@@ -56,17 +46,16 @@ class Shop(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name="カテゴリ")
     description = models.TextField(blank=True, null=True)
     region = models.CharField("地域", max_length=10, choices=REGION_CHOICES, blank=True, null=True)  # 地域を選択式に変更
-    rating = models.IntegerField("評価", choices=RATING_CHOICES, default=3)  # 評価を選択式に変更
-
+    
     def __str__(self):
         return self.name
 
-    def update_rating(self):
-        """レビューに基づいて店舗の平均評価を更新する"""
-        reviews = self.review_set.all()
-        if reviews.exists():
-            self.rating = reviews.aggregate(models.Avg('score'))['score__avg']
-            self.save()
+    #def update_rating(self):
+       # """レビューに基づいて店舗の平均評価を更新する"""
+        #reviews = self.review_set.all()
+        #if reviews.exists():
+            #self.rating = reviews.aggregate(models.Avg('score'))['score__avg']
+            #self.save()
 
 # レビュー
 class Review(models.Model):

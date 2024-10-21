@@ -36,7 +36,8 @@ def Search(request):
 
     if request.method == 'GET':
         searchform = SearchForm(request.GET)
-
+        
+        print('searchform.is_valid()',searchform.is_valid())
         if searchform.is_valid():
             # 各検索パラメータを取得
             category_id = request.GET.get('selected_category', '')
@@ -195,55 +196,6 @@ class IndexView(TemplateView):
         })
 
         return context
-
-# 検索機能のビュー
-def Search(request):
-    total_hit_count = 0
-    shop_info = []
-    
-    if request.method == 'GET':
-        searchform = SearchForm(request.GET)
-
-        if searchform.is_valid():
-            category_id = request.GET.get('selected_category', '')
-            freeword = request.GET.get('freeword', '')
-            region = request.GET.get('region', '')  # 地域
-            price_range = request.GET.get('price_range', '')  # 価格帯
-            rating = request.GET.get('rating', '')  # 評価
-
-            query = Shop.objects.all()
-
-            # カテゴリのフィルタリング
-            if category_id:
-                query = query.filter(category_id=category_id)
-
-            # フリーワードのフィルタリング（店名で検索）
-            if freeword:
-                query = query.filter(name__icontains=freeword)
-
-            # 地域のフィルタリング（住所に地域が含まれるか）
-            if region:
-                query = query.filter(address__icontains=region)
-
-            # 価格帯のフィルタリング
-            if price_range:
-                min_price, max_price = map(int, price_range.split('-'))
-                query = query.filter(price_range__gte=min_price, price_range__lte=max_price)
-
-            # 評価のフィルタリング
-            if rating:
-                query = query.filter(review__score__gte=rating)
-
-            total_hit_count = query.count()
-            shop_info = query[:10]  # 表示件数を制限
-
-    params = {
-        'total_hit_count': total_hit_count,
-        'shop_info': shop_info,
-        'searchform': searchform,
-    }
-
-    return render(request, 'userapp/search.html', params)
 
 # 予約キャンセルのビュー
 class ReservationCancelView(LoginRequiredMixin, DeleteView):

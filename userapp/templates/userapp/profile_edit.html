@@ -4,15 +4,27 @@
     <h1>会員情報の編集</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
         
-        <!-- パスワードリセットリンクの追加 -->
+        <!-- フィールドを個別にレンダリング -->
         <div class="form-group">
-            <label for="password">パスワード:</label>
+            <label for="id_username">ユーザー名:</label>
+            {{ form.username }}
+        </div>
+
+        <div class="form-group">
+            <label for="id_email">メールアドレス:</label>
+            {{ form.email }}
+        </div>
+
+        <!-- 他の必要なフィールドも同様に表示 -->
+        
+        <!-- パスワードフィールドを個別にレンダリングし、メッセージを削除 -->
+        <div class="form-group">
+            <label for="id_password">パスワード:</label>
             <p>パスワードは設定されていませんでした。</p>
             <p>パスワードを忘れた方は <a href="{% url 'userapp:password_reset' %}">こちら</a> を押してください。</p>
         </div>
-        
+
         <button type="submit" class="btn btn-primary">保存</button>
         <a href="{% url 'userapp:profile' %}" class="btn btn-secondary">キャンセル</a>
     </form>
