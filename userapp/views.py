@@ -74,8 +74,10 @@ def Search(request):
             # 評価のフィルタリング（平均スコアでフィルタリング）
             if rating:
                 try:
-                    rating_value = int(rating)
-                    query = query.annotate(avg_rating=Avg('review__score')).filter(avg_rating__gte=rating_value)
+                    min_rating_value = int(rating)
+                    max_rating_value = min_rating_value + 1
+                    
+                    query = query.annotate(avg_rating=Avg('review__score')).filter(avg_rating__gte=min_rating_value, avg_rating__lt=max_rating_value)
                 except ValueError:
                     pass  # 無効なratingが渡された場合はフィルタを適用しない
 

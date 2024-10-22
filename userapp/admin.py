@@ -31,11 +31,11 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(Shop)
 class ShopAdmin(admin.ModelAdmin):
     # 一覧表示の際に表示するフィールド
-    list_display = ('name', 'category', 'address', 'price_range', 'region', 'rating')
+    list_display = ('name', 'category', 'address', 'price_range', 'region')
     # 検索可能なフィールド（地域、予算、評価を含む）
-    search_fields = ('name', 'address', 'price_range', 'region', 'rating', 'category__name')
+    search_fields = ('name', 'address', 'price_range', 'region', 'category__name')
     # フィルター可能なフィールド（地域、予算、評価を追加）
-    list_filter = ('category', 'region', 'price_range', 'rating')
+    list_filter = ('category', 'region', 'price_range')
 
 # サブスクリプションモデルの管理画面設定
 @admin.register(Subscription)
