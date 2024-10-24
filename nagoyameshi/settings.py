@@ -126,7 +126,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'userhanako@gmail.com' # Gmailアカウント
-EMAIL_HOST_PASSWORD = 'nagoyameshi', 'kdykzlurdqpyjlne'  # アプリパスワード
+EMAIL_HOST_PASSWORD = 'kdykzlurdqpyjlne'  # アプリパスワード
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # メール送信元アドレス
 
 # ローカル開発時はメール送信をコンソールに出力する設定
