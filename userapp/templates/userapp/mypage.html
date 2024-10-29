@@ -14,6 +14,12 @@
             <li><a href="{% url 'userapp:payment_method' %}">有料会員へ変更</a></li>
             <li class="text-muted" style="pointer-events: none;">有料プラン解約</li>
         {% endif %}
+         <!-- パスワードフィールドを個別にレンダリングし、メッセージを削除 -->
+         <div class="form-group">
+            <label for="id_password"></label>
+            <p>パスワードを変更 の場合は<a href="{% url 'userapp:password_reset' %}">こちら</a> を押してください。</p>
+        </div>
+
     </ul>
 </div>
 <div class="col-md-9">

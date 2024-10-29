@@ -5,26 +5,49 @@
     <form method="post">
         {% csrf_token %}
         
-        <!-- フィールドを個別にレンダリング -->
+        <!-- ユーザー名（氏名） -->
         <div class="form-group">
-            <label for="id_username">ユーザー名:</label>
+            <label for="id_username">氏名:</label>
             {{ form.username }}
         </div>
 
+        <!-- メールアドレス -->
         <div class="form-group">
             <label for="id_email">メールアドレス:</label>
             {{ form.email }}
         </div>
 
-        <!-- 他の必要なフィールドも同様に表示 -->
-        
-        <!-- パスワードフィールドを個別にレンダリングし、メッセージを削除 -->
+        <!-- 郵便番号 -->
         <div class="form-group">
-            <label for="id_password">パスワード:</label>
-            <p>パスワードは設定されていませんでした。</p>
-            <p>パスワードを忘れた方は <a href="{% url 'userapp:password_reset' %}">こちら</a> を押してください。</p>
+            <label for="id_postal_code">郵便番号:</label>
+            {{ form.postal_code }}
         </div>
 
+        <!-- 住所 -->
+        <div class="form-group">
+            <label for="id_address">住所:</label>
+            {{ form.address }}
+        </div>
+
+        <!-- 電話番号 -->
+        <div class="form-group">
+            <label for="id_phone_number">電話番号:</label>
+            {{ form.phone_number }}
+        </div>
+
+        <!-- 誕生日 -->
+        <div class="form-group">
+            <label for="id_birthday">誕生日:</label>
+            {{ form.birthday }}
+        </div>
+
+        <!-- 職業 -->
+        <div class="form-group">
+            <label for="id_job">職業:</label>
+            {{ form.job }}
+        </div>
+
+        <!-- 送信ボタン -->
         <button type="submit" class="btn btn-primary">保存</button>
         <a href="{% url 'userapp:profile' %}" class="btn btn-secondary">キャンセル</a>
     </form>
